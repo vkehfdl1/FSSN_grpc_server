@@ -18,7 +18,7 @@ type server struct {
 	pb.UnimplementedMyServiceServer
 }
 
-func (s *server) MyHelloFunction(ctx context.Context, in *pb.MyNumber) (*pb.MyNumber, error) {
+func (s *server) MyFunction(ctx context.Context, in *pb.MyNumber) (*pb.MyNumber, error) {
 	log.Printf("Received: %d", in.GetValue())
 	return &pb.MyNumber{Value: in.GetValue() * in.GetValue()}, nil
 }
