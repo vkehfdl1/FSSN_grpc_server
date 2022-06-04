@@ -9,6 +9,7 @@ import (
 	"io"
 	"log"
 	"net"
+	"strconv"
 )
 
 var (
@@ -25,6 +26,10 @@ type bidirectionalServer struct {
 
 type clientStreamingServer struct {
 	pb.UnimplementedClientStreamingServer
+}
+
+type serverStreamingServer struct {
+	pb.UnimplementedServerStreamingServer
 }
 
 func (s *server) MyFunction(ctx context.Context, in *pb.MyNumber) (*pb.MyNumber, error) {
@@ -67,6 +72,17 @@ func (s *clientStreamingServer) GetServerResponse(stream pb.ClientStreaming_GetS
 	}
 }
 
+func (s *serverStreamingServer) GetServerResponse(num *pb.ServerNumber, stream pb.ServerStreaming_GetServerResponseServer) error {
+	log.Printf("Server processing gRPC server-streaming %d", num.Value)
+	for i := 0; i < 5; i++ {
+		var message = &pb.ServerMessage{Message: "message #" + strconv.Itoa(i+1)}
+		if err := stream.Send(message); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func main() {
 	serverName := flag.Int("server", 1, "which server to execute in this server")
 	flag.Parse()
@@ -83,6 +99,8 @@ func main() {
 		pb.RegisterBidirectionalServer(s, &bidirectionalServer{})
 	} else if *serverName == 3 {
 		pb.RegisterClientStreamingServer(s, &clientStreamingServer{})
+	} else if *serverName == 4 {
+		pb.RegisterServerStreamingServer(s, &serverStreamingServer{})
 	}
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
