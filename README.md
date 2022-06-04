@@ -1,13 +1,17 @@
-# Deployment
-First, you must build your project.
-Then, you can deploy your project to fly.io
+# Install
+- install latest go-lang
+- install latest protobuf for go-lang
+- install latest gRPC for go-lang
+
+# How to use
 
 ```shell
-$ flyctl deploy
+$ go build .\main.go
+$ go run .\main.go -server={server_code}
 ```
 
-You can check grpc connection with the code below.
-
-```shell
-$ grpcurl -proto .\proto\FSSN_grpc_proto\hello_grpc.proto fssn.fly.dev:443 MyService/MyFunction
-```
+### server code
+1. Unary Call
+2. Bidirectional Streaming
+3. Client-side Streaming
+4. Server-side Streaming
