@@ -23,11 +23,6 @@ func (s *server) MyFunction(ctx context.Context, in *pb.MyNumber) (*pb.MyNumber,
 	return &pb.MyNumber{Value: in.GetValue() * in.GetValue()}, nil
 }
 
-func (s *server) GetServerResponse(message *pb.Message) (*pb.Message, error) {
-	log.Printf("Server processing gRPC bidirectional streaming.")
-	return &pb.Message{Message: message.GetMessage()}, nil
-}
-
 func main() {
 	flag.Parse()
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", *port))
